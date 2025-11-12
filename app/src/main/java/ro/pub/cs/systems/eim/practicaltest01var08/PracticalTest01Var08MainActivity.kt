@@ -1,6 +1,7 @@
 package ro.pub.cs.systems.eim.practicaltest01var08
 
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -12,6 +13,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class PracticalTest01Var08MainActivity : AppCompatActivity() {
+    private lateinit var startedServiceBroadcastReceiver: Receiver
+    private lateinit var startedServiceIntentFilter: IntentFilter
+
+
     private lateinit var riddleText : EditText
     private lateinit var answerText : EditText
     private lateinit var btnPlay : Button
@@ -43,9 +48,14 @@ class PracticalTest01Var08MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Last was a Lose", Toast.LENGTH_SHORT).show()
         }
 
+        startedServiceIntentFilter = IntentFilter().apply {
+            addAction(Constants.BROADCAST_TAG)
+        }
+        startedServiceBroadcastReceiver = Receiver()
+        registerReceiver(startedServiceBroadcastReceiver,startedServiceIntentFilter)
 
         btnPlay.setOnClickListener {
-            if(riddleText.text != null && answerText.text != null)
+            if(riddleText.text.isNotEmpty() && answerText.text.isNotEmpty())
                 try {
                     startActivityForResult(
                         Intent(this, PracticalTest01Var08PlayActivity::class.java).apply {
